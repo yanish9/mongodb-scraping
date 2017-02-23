@@ -63,8 +63,25 @@ app.get("/", function(req, res) {
 app.get("/savedArticles", function(req, res) {
 
     Article.find({}, function(err, data) {
+        console.log("saved");
         res.json(data);
     })
+
+});
+
+
+
+app.get("/deleteArticle/:id", function(req, res) {
+
+    Article.findByIdAndRemove(req.params.id , function(err) {
+    if (!err) {
+          console.log("Deleted")
+          res.json({success:1});
+    }
+    else {
+            console.log(err)
+    }
+});
 
 });
 
@@ -158,9 +175,9 @@ app.get("/articles/:id", function(req, res) {
 
 
 // Create a new note or replace an existing note
-app.post("/articles/:id", function(req, res) {
+app.post("/addnote/:id", function(req, res) {
 
-
+console.log(req.body);
     var note = new Note(req.body);
 
     note.save(function(error, doc) {
@@ -171,7 +188,7 @@ app.post("/articles/:id", function(req, res) {
         // Otherwise
         else {
             // Find our user and push the new note id into the User's notes array
-            Article.findOneAndUpdate({ "_id": req.params.id }, { "note": doc._id }, { new: true }, function(err, newdoc) {
+            Article.findOneAndUpdate({ "_id": req.params.id }, { $push: { "notes": doc._id } }, { new: true }, function(err, newdoc) {
                 // Send any errors to the browser
                 if (err) {
                     res.send(err);
