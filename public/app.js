@@ -46,6 +46,14 @@ function showNotesModal() {
 
      $(".modal-body").html("");
 
+     $.get("/savedNotes/" + currentArticleId , function(data){
+
+    $(".modal-body").append("<>");
+
+     })
+
+
+
     $(".modal-body").append("<input id='noteTextbox' type='text' />");
 
     $(".modal-body").append("<button class='addNote btn btn-primary' > Save </button>");

@@ -24,7 +24,7 @@ var Promise = require("bluebird");
 
 mongoose.Promise = Promise;
 
-
+var port = process.env.PORT || 3000;
 // Initialize Express
 var app = express();
 
@@ -38,7 +38,7 @@ app.use(bodyParser.urlencoded({
 app.use(express.static("public"));
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/articlesnotes");
+mongoose.connect("mongodb://article:yanish@ds031651.mlab.com:31651/article");
 var db = mongoose.connection;
 
 // Show any mongoose errors
@@ -66,6 +66,26 @@ app.get("/savedArticles", function(req, res) {
         console.log("saved");
         res.json(data);
     })
+
+});
+
+app.get("/savedNotes/:id", function(req, res) {
+
+    Article.findOne({ "_id": req.params.id }, function(err, doc) {
+
+
+        }).populate("notes")
+        // Now, execute that query
+        .exec(function(error, doc) {
+            // Send any errors to the browser
+            if (error) {
+                res.send(error);
+            }
+            // Or, send our results to the browser, which will now include the books stored in the library
+            else {
+                res.send(doc);
+            }
+        });
 
 });
 
@@ -215,6 +235,6 @@ console.log(req.body);
 
 
 // Listen on port 3000
-app.listen(3000, function() {
-    console.log("App running on port 3000!");
+app.listen(port, function() {
+    console.log("App running on port " + port);
 });
